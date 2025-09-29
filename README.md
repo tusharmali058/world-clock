@@ -1,7 +1,7 @@
 Elegant Analog Clock
 A sophisticated and visually stunning analog clock implementation with smooth animations, multiple timezone support, and an elegant user interface.
 
-https://via.placeholder.com/800x400/1a2a3a/ffffff?text=Elegant+Analog+Clock
+
 
 ✨ Features
 🎨 Visual Design
@@ -211,5 +211,6 @@ Color scheme inspired by modern UI trends
 
 📞 Support
 If you have any questions or issues, please open an issue on the GitHub repository.
+
 
 Crafted with precision | Elegant Time © 2025
