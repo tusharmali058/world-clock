@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegant Analog Clock</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a2a3a, #0d1b2a);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e0e0e0;
+            overflow: hidden;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 30px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(100, 150, 255, 0.5);
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            color: #a0a0a0;
+            font-weight: 300;
+        }
+        
+        .clock-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 60px;
+            flex-wrap: wrap;
+        }
+        
+        .clock-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .clock {
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            background-color: rgba(20, 30, 48, 0.8);
+            box-shadow: 0 0 0 10px rgba(40, 60, 100, 0.3), 0 0 30px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            border: 1px solid rgba(100, 150, 255, 0.2);
+        }
+        /* Clock center dot */
+        
+        .clock::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(231, 76, 60, 0.7);
+        }
+        /* Hour markers */
+        
+        .hour-marker {
+            position: absolute;
+            width: 4px;
+            height: 15px;
+            background-color: rgba(200, 220, 255, 0.8);
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            transform-origin: bottom center;
+        }
+        
+        .hour-marker:nth-child(3n+1) {
+            height: 25px;
+            width: 6px;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        /* Hour numbers */
+        
+        .hour-number {
+            position: absolute;
+            font-size: 22px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 5px rgba(100, 150, 255, 0.5);
+        }
+        /* Minute markers */
+        
+        .minute-marker {
+            position: absolute;
+            width: 2px;
+            height: 8px;
+            background-color: rgba(200, 220, 255, 0.4);
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            transform-origin: bottom center;
+        }
+        /* Clock hands */
+        
+        .hand {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform-origin: bottom center;
+            border-radius: 4px 4px 0 0;
+            transition: transform 0.05s cubic-bezier(0.4, 2.3, 0.8, 1);
+        }
+        
+        .hour-hand {
+            width: 8px;
+            height: 70px;
+            background: linear-gradient(to top, #3498db, #2c3e50);
+            z-index: 3;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .minute-hand {
+            width: 6px;
+            height: 100px;
+            background: linear-gradient(to top, #2ecc71, #27ae60);
+            z-index: 2;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        .second-hand {
+            width: 2px;
+            height: 120px;
+            background: linear-gradient(to top, #e74c3c, #c0392b);
+            z-index: 1;
+            box-shadow: 0 0 5px rgba(231, 76, 60, 0.7);
+        }
+        
+        .second-hand::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #e74c3c;
+            border-radius: 50%;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 5px rgba(231, 76, 60, 0.7);
+        }
+        /* Digital time display */
+        
+        .digital-time {
+            font-size: 32px;
+            font-weight: 300;
+            color: #ffffff;
+            letter-spacing: 3px;
+            background-color: rgba(30, 40, 60, 0.7);
+            padding: 15px 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(100, 150, 255, 0.2);
+            text-shadow: 0 0 5px rgba(100, 150, 255, 0.5);
+        }
+        /* Date display */
+        
+        .date-display {
+            font-size: 18px;
+            color: #a0b0c0;
+            margin-top: -10px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        /* Info panel */
+        
+        .info-panel {
+            background-color: rgba(30, 40, 60, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            width: 300px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(100, 150, 255, 0.2);
+        }
+        
+        .info-panel h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+            font-weight: 400;
+            text-align: center;
+            border-bottom: 1px solid rgba(100, 150, 255, 0.3);
+            padding-bottom: 10px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .info-label {
+            color: #a0b0c0;
+            font-weight: 300;
+        }
+        
+        .info-value {
+            color: #ffffff;
+            font-weight: 400;
+        }
+        /* Timezone selector */
+        
+        .timezone-selector {
+            margin-top: 20px;
+        }
+        
+        .timezone-selector select {
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(40, 50, 70, 0.8);
+            border: 1px solid rgba(100, 150, 255, 0.3);
+            border-radius: 5px;
+            color: #ffffff;
+            font-size: 14px;
+        }
+        /* Pulsing effect */
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(100, 150, 255, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(100, 150, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(100, 150, 255, 0);
+            }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+            border-radius: 50%;
+        }
+        /* Footer */
+        
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #a0a0a0;
+            font-size: 14px;
+            font-weight: 300;
+        }
+        /* Responsive design */
+        
+        @media (max-width: 768px) {
+            .clock-section {
+                flex-direction: column;
+                gap: 40px;
+            }
+            .clock {
+                width: 280px;
+                height: 280px;
+            }
+            .digital-time {
+                font-size: 26px;
+            }
+        }
+        /* Decorative elements */
+        
+        .decoration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: twinkle 5s infinite ease-in-out;
+        }
+        
+        @keyframes twinkle {
+            0%,
+            100% {
+                opacity: 0.2;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="far fa-clock"></i>World Clock</h1>
+            <p>Precision in every second</p>
+        </div>
+
+        <div class="clock-section">
+            <div class="clock-container">
+                <div class="clock" id="clock">
+                    <!-- Hour markers will be added with JavaScript -->
+                </div>
+                <div class="digital-time" id="digital-time"></div>
+                <div class="date-display" id="date-display"></div>
+            </div>
+
+            <div class="info-panel">
+                <h2><i class="fas fa-info-circle"></i> Clock Information</h2>
+                <div class="info-item">
+                    <span class="info-label">Precision:</span>
+                    <span class="info-value">± 0.01 seconds</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Movement:</span>
+                    <span class="info-value">Swiss Automatic</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Power Reserve:</span>
+                    <span class="info-value">72 hours</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Water Resistance:</span>
+                    <span class="info-value">50 meters</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Crystal:</span>
+                    <span class="info-value">Sapphire Glass</span>
+                </div>
+
+                <div class="timezone-selector">
+                    <select id="timezone-select">
+                        <option value="local">Local Time</option>
+                        <option value="utc">UTC</option>
+                        <option value="newyork">New York</option>
+                        <option value="london">London</option>
+                        <option value="tokyo">Tokyo</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Crafted with precision | Elegant Time &copy; 2023</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const clock = document.getElementById('clock');
+            const digitalTime = document.getElementById('digital-time');
+            const dateDisplay = document.getElementById('date-display');
+            const timezoneSelect = document.getElementById('timezone-select');
+
+            // Create hour markers and numbers
+            for (let i = 1; i <= 12; i++) {
+                // Create hour markers
+                const marker = document.createElement('div');
+                marker.className = 'hour-marker';
+                marker.style.transform = `translateX(-50%) rotate(${i * 30}deg)`;
+                clock.appendChild(marker);
+
+                // Create hour numbers
+                const number = document.createElement('div');
+                number.className = 'hour-number';
+                number.textContent = i;
+
+                // Position numbers around the clock
+                const angle = (i * 30) * (Math.PI / 180);
+                const radius = 125;
+                const x = Math.sin(angle) * radius;
+                const y = -Math.cos(angle) * radius;
+
+                number.style.left = `calc(50% + ${x}px)`;
+                number.style.top = `calc(50% + ${y}px)`;
+                number.style.transform = 'translate(-50%, -50%)';
+
+                clock.appendChild(number);
+            }
+
+            // Create minute markers
+            for (let i = 0; i < 60; i++) {
+                if (i % 5 !== 0) { // Skip where hour markers are
+                    const marker = document.createElement('div');
+                    marker.className = 'minute-marker';
+                    marker.style.transform = `translateX(-50%) rotate(${i * 6}deg)`;
+                    clock.appendChild(marker);
+                }
+            }
+
+            // Create clock hands
+            const hourHand = document.createElement('div');
+            hourHand.className = 'hand hour-hand';
+            clock.appendChild(hourHand);
+
+            const minuteHand = document.createElement('div');
+            minuteHand.className = 'hand minute-hand';
+            clock.appendChild(minuteHand);
+
+            const secondHand = document.createElement('div');
+            secondHand.className = 'hand second-hand';
+            clock.appendChild(secondHand);
+
+            // Create decorative stars
+            createStars();
+
+            // Update clock function
+            function updateClock() {
+                const now = new Date();
+                let timezoneOffset = 0;
+
+                // Apply timezone offset if selected
+                if (timezoneSelect.value === 'utc') {
+                    timezoneOffset = now.getTimezoneOffset();
+                } else if (timezoneSelect.value === 'newyork') {
+                    timezoneOffset = now.getTimezoneOffset() + 300; // EST is UTC-5
+                } else if (timezoneSelect.value === 'london') {
+                    timezoneOffset = now.getTimezoneOffset() + 0; // GMT is UTC+0
+                } else if (timezoneSelect.value === 'tokyo') {
+                    timezoneOffset = now.getTimezoneOffset() - 540; // JST is UTC+9
+                }
+
+                const adjustedTime = new Date(now.getTime() + timezoneOffset * 60000);
+
+                // Get time components
+                const hours = adjustedTime.getHours();
+                const minutes = adjustedTime.getMinutes();
+                const seconds = adjustedTime.getSeconds();
+                const milliseconds = adjustedTime.getMilliseconds();
+
+                // Calculate angles for hands
+                const secondAngle = seconds * 6 + milliseconds * 0.006;
+                const minuteAngle = minutes * 6 + seconds * 0.1;
+                const hourAngle = (hours % 12) * 30 + minutes * 0.5;
+
+                // Apply rotations to hands
+                secondHand.style.transform = `translateX(-50%) rotate(${secondAngle}deg)`;
+                minuteHand.style.transform = `translateX(-50%) rotate(${minuteAngle}deg)`;
+                hourHand.style.transform = `translateX(-50%) rotate(${hourAngle}deg)`;
+
+                // Update digital time
+                const formattedHours = hours.toString().padStart(2, '0');
+                const formattedMinutes = minutes.toString().padStart(2, '0');
+                const formattedSeconds = seconds.toString().padStart(2, '0');
+                digitalTime.textContent = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+
+                // Update date display
+                const options = {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                };
+                dateDisplay.textContent = adjustedTime.toLocaleDateString('en-US', options);
+
+                // Add pulsing effect to digital time every second
+                if (seconds === 0) {
+                    digitalTime.classList.add('pulse');
+                    setTimeout(() => {
+                        digitalTime.classList.remove('pulse');
+                    }, 1000);
+                }
+            }
+
+            // Create decorative stars
+            function createStars() {
+                const decoration = document.createElement('div');
+                decoration.className = 'decoration';
+                document.body.appendChild(decoration);
+
+                for (let i = 0; i < 50; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+
+                    const size = Math.random() * 3 + 1;
+                    star.style.width = `${size}px`;
+                    star.style.height = `${size}px`;
+
+                    star.style.left = `${Math.random() * 100}vw`;
+                    star.style.top = `${Math.random() * 100}vh`;
+
+                    star.style.animationDelay = `${Math.random() * 5}s`;
+
+                    decoration.appendChild(star);
+                }
+            }
+
+            // Initial call to set clock immediately
+            updateClock();
+
+            // Update clock every 50ms for smooth second hand movement
+            setInterval(updateClock, 50);
+
+            // Update clock when timezone changes
+            timezoneSelect.addEventListener('change', updateClock);
+        });
+    </script>
+</body>
+
+</html>
